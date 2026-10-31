@@ -101,8 +101,8 @@ public class InteractionModalHandler {
 			}
 
 			// Create panel
-			String argsStr = event.getInteraction().getData().data().get().components().get().get(0).components().get()
-					.get(0).value().get() + "\n\n**Closes:** <t:" + (def.deadline / 1000) + ":R>\n**Accepting:** __"
+			String argsStr = event.getInteraction().getData().data().get().components().get().get(0).component().get()
+					.value().get() + "\n\n**Closes:** <t:" + (def.deadline / 1000) + ":R>\n**Accepting:** __"
 					+ def.applicantLimit + " applicants__"
 					+ "\n\nPlease enable DMs for this server, application is done via DMs.";
 			if (argsStr.length() > 4000) {
@@ -182,8 +182,8 @@ public class InteractionModalHandler {
 			}
 
 			// Create panel
-			String argsStr = event.getInteraction().getData().data().get().components().get().get(0).components().get()
-					.get(0).value().get()
+			String argsStr = event.getInteraction().getData().data().get().components().get().get(0).component().get()
+					.value().get()
 					+ "\n\nPlease enable DMs for this server, many interactions with the bot are done via DM.";
 			if (argsStr.length() > 4000) {
 				// Warn about the length
