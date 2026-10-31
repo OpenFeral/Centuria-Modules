@@ -22,8 +22,8 @@ public class UpdateDisplayNameHandler {
 	 */
 	public static Mono<?> handle(String id, ModalSubmitInteractionEvent event, GatewayDiscordClient gateway) {
 		// Load fields
-		String newName = event.getInteraction().getData().data().get().components().get().get(0).components().get()
-				.get(0).value().get();
+		String newName = event.getInteraction().getData().data().get().components().get().get(0).component().get()
+				.value().get();
 
 		// Load account manager
 		AccountManager manager = AccountManager.getInstance();

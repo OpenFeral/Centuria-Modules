@@ -33,8 +33,8 @@ public class FeedbackReplyHandler {
 	 */
 	public static Mono<?> handle(String id, ModalSubmitInteractionEvent event, GatewayDiscordClient gateway) {
 		// Load fields
-		String reply = event.getInteraction().getData().data().get().components().get().get(0).components().get().get(0)
-				.value().get();
+		String reply = event.getInteraction().getData().data().get().components().get().get(0).component().get().value()
+				.get();
 
 		// Find account
 		CenturiaAccount account = AccountManager.getInstance().getAccount(id.split("/")[1]);

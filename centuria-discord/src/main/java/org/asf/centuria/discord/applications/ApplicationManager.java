@@ -363,7 +363,7 @@ public class ApplicationManager {
 			if (def.application.get(index - 1).parameters.has("key")) {
 				JsonObject res = new JsonObject();
 				event.getInteraction().getData().data().get().components().get().forEach(entry -> {
-					ComponentData comp = entry.components().get().get(0);
+					ComponentData comp = entry.component().get();
 					res.addProperty(comp.customId().get(), comp.value().get());
 				});
 				fields.add(def.application.get(index - 1).parameters.get("key").getAsString(), res);

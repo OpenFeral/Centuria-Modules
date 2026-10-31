@@ -29,12 +29,12 @@ public class RegistrationHandler {
 	 */
 	public static Mono<?> handle(String id, ModalSubmitInteractionEvent event, GatewayDiscordClient gateway) {
 		// Load fields
-		String accountName = event.getInteraction().getData().data().get().components().get().get(0).components().get()
-				.get(0).value().get();
-		String displayName = event.getInteraction().getData().data().get().components().get().get(1).components().get()
-				.get(0).value().get();
-		String pref2faSettings = event.getInteraction().getData().data().get().components().get().get(2).components()
-				.get().get(0).value().get();
+		String accountName = event.getInteraction().getData().data().get().components().get().get(0).component().get()
+				.value().get();
+		String displayName = event.getInteraction().getData().data().get().components().get().get(1).component().get()
+				.value().get();
+		String pref2faSettings = event.getInteraction().getData().data().get().components().get().get(2).component()
+				.get().value().get();
 
 		// Load account manager
 		AccountManager manager = AccountManager.getInstance();

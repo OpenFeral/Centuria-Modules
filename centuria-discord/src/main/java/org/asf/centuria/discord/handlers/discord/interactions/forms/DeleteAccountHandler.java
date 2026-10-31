@@ -17,8 +17,8 @@ public class DeleteAccountHandler {
 	 */
 	public static Mono<?> handle(String id, ModalSubmitInteractionEvent event, GatewayDiscordClient gateway) {
 		// Load fields
-		String confirm = event.getInteraction().getData().data().get().components().get().get(0).components().get()
-				.get(0).value().get();
+		String confirm = event.getInteraction().getData().data().get().components().get().get(0).component().get()
+				.value().get();
 
 		// Find owner UserID
 		String userID = event.getInteraction().getUser().getId().asString();
