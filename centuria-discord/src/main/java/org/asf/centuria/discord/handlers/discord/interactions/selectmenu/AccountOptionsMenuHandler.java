@@ -19,6 +19,7 @@ import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.interaction.SelectMenuInteractionEvent;
 import discord4j.core.object.component.ActionRow;
 import discord4j.core.object.component.Button;
+import discord4j.core.object.component.Label;
 import discord4j.core.object.component.SelectMenu;
 import discord4j.core.object.component.TextInput;
 import discord4j.core.object.component.SelectMenu.Option;
@@ -80,8 +81,8 @@ public class AccountOptionsMenuHandler {
 			// Show display name change form
 			InteractionPresentModalSpec.Builder modal = InteractionPresentModalSpec.builder();
 			modal.title("Update display name");
-			modal.addComponent(ActionRow.of(TextInput.small("displayname", "New display name", 2, 16).required()
-					.prefilled(account.getDisplayName())));
+			modal.addComponent(Label.of("New display name",
+					TextInput.small("displayname", 2, 16).required().prefilled(account.getDisplayName())));
 			modal.customId("updatedisplayname");
 
 			// Show form
@@ -93,9 +94,9 @@ public class AccountOptionsMenuHandler {
 			// Show login name change form
 			InteractionPresentModalSpec.Builder modal = InteractionPresentModalSpec.builder();
 			modal.title("Update login name");
-			modal.addComponent(ActionRow.of(TextInput.small("oldname", "Old login name", 1, 320).required()));
-			modal.addComponent(ActionRow.of(TextInput.small("newname", "New login name", 1, 320).required()));
-			modal.addComponent(ActionRow.of(TextInput.small("confirmname", "Confirm login name", 1, 320).required()));
+			modal.addComponent(Label.of("Old login name", TextInput.small("oldname", 1, 320).required()));
+			modal.addComponent(Label.of("New login name", TextInput.small("newname", 1, 320).required()));
+			modal.addComponent(Label.of("Confirm login name", TextInput.small("confirmname", 1, 320).required()));
 			modal.customId("updateloginname");
 
 			// Show form
@@ -107,8 +108,8 @@ public class AccountOptionsMenuHandler {
 			// Show delete confirm form
 			InteractionPresentModalSpec.Builder modal = InteractionPresentModalSpec.builder();
 			modal.title("Delete your account");
-			modal.addComponent(ActionRow
-					.of(TextInput.small("confirm", "Confirm with 'Yes, fully delete my account!'").required()));
+			modal.addComponent(
+					Label.of("Confirm with 'Yes, fully delete my account!'", TextInput.small("confirm").required()));
 			modal.customId("deleteaccount");
 
 			// Show form
@@ -303,7 +304,7 @@ public class AccountOptionsMenuHandler {
 			}
 
 			// Add file
-			msg.addFile("inventory.zip", new ByteArrayInputStream(strm.toByteArray()));
+			msg.addFile("inventory.zip", null, new ByteArrayInputStream(strm.toByteArray()));
 
 			// Send message
 			event.getInteraction().getChannel().block().createMessage(msg.build()).block();

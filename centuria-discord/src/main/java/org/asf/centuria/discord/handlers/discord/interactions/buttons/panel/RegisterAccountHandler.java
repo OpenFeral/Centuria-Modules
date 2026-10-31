@@ -5,7 +5,7 @@ import org.asf.centuria.discord.LinkUtils;
 
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.interaction.ButtonInteractionEvent;
-import discord4j.core.object.component.ActionRow;
+import discord4j.core.object.component.Label;
 import discord4j.core.object.component.TextInput;
 import discord4j.core.spec.InteractionApplicationCommandCallbackSpec;
 import discord4j.core.spec.InteractionPresentModalSpec;
@@ -35,11 +35,10 @@ public class RegisterAccountHandler {
 			// Build form
 			InteractionPresentModalSpec.Builder modal = InteractionPresentModalSpec.builder();
 			modal.title("Register for " + DiscordBotModule.getServerName());
-			modal.addComponent(ActionRow.of(TextInput.small("accountname", "Account login name", 3, 320).required()));
-			modal.addComponent(ActionRow.of(TextInput.small("displayname", "Ingame display name", 2, 16).required()));
-			modal.addComponent(
-					ActionRow.of(TextInput.small("enable2fa", "Enable 2-factor authentication? (yes/no)", 2, 3)
-							.required(false).prefilled("No")));
+			modal.addComponent(Label.of("Account login name", TextInput.small("accountname", 3, 320).required()));
+			modal.addComponent(Label.of("Ingame display name", TextInput.small("displayname", 2, 16).required()));
+			modal.addComponent(Label.of("Enable 2-factor authentication? (yes/no)",
+					TextInput.small("enable2fa", 2, 3).required(false).prefilled("No")));
 			modal.customId("accountregistration");
 
 			// Show form

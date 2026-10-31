@@ -58,7 +58,7 @@ public class FeedbackReplyHandler {
 				try {
 					if (LinkUtils.isPairedWithDiscord(account)) {
 						String discord = LinkUtils.getDiscordAccountFrom(account);
-						User owner = DiscordBotModule.getClient().getUserById(Snowflake.of(discord)).block();
+						User owner = DiscordBotModule.getGatewayClient().getUserById(Snowflake.of(discord)).block();
 
 						EmbedCreateSpec.Builder embed = EmbedCreateSpec.builder();
 						embed.title("Response to your Ingame Feedback");
@@ -104,7 +104,7 @@ public class FeedbackReplyHandler {
 			try {
 				if (LinkUtils.isPairedWithDiscord(account)) {
 					String discord = LinkUtils.getDiscordAccountFrom(account);
-					User owner = DiscordBotModule.getClient().getUserById(Snowflake.of(discord)).block();
+					User owner = DiscordBotModule.getGatewayClient().getUserById(Snowflake.of(discord)).block();
 
 					EmbedCreateSpec.Builder embed = EmbedCreateSpec.builder();
 					embed.title("Response to your Ingame Feedback");

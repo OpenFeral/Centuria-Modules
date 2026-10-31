@@ -188,11 +188,10 @@ public class DiscordRegistrationHelper extends RegistrationVerificationHelper {
 		}
 
 		// Find member
-		for (Guild g : DiscordBotModule.getClient().getGuilds().toIterable()) {
+		for (Guild g : DiscordBotModule.getGatewayClient().getGuilds().toIterable()) {
 			for (Member u : g.getMembers().toIterable()) {
 				if (u.getTag().equals(payload.get("discordUser").getAsString())
-						|| (u.getUsername().equals(payload.get("discordUser").getAsString())
-								&& Integer.parseInt(u.getDiscriminator()) == 0)) {
+						|| (u.getUsername().equals(payload.get("discordUser").getAsString()))) {
 					// Found it
 
 					// Check code
@@ -289,7 +288,7 @@ public class DiscordRegistrationHelper extends RegistrationVerificationHelper {
 	@Override
 	public void postRegistration(CenturiaAccount account, String accountName, String displayName, JsonObject payload) {
 		// Find member
-		for (Guild g : DiscordBotModule.getClient().getGuilds().toIterable()) {
+		for (Guild g : DiscordBotModule.getGatewayClient().getGuilds().toIterable()) {
 			for (Member u : g.getMembers().toIterable()) {
 				if (u.getTag().equals(payload.get("discordUser").getAsString())) {
 					// Found it

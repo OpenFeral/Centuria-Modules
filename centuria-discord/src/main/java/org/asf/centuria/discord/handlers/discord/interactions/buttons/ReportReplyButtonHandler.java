@@ -5,7 +5,7 @@ import org.asf.centuria.accounts.CenturiaAccount;
 
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.interaction.ButtonInteractionEvent;
-import discord4j.core.object.component.ActionRow;
+import discord4j.core.object.component.Label;
 import discord4j.core.object.component.TextInput;
 import discord4j.core.spec.InteractionPresentModalSpec;
 import reactor.core.publisher.Mono;
@@ -32,7 +32,7 @@ public class ReportReplyButtonHandler {
 			InteractionPresentModalSpec.Builder modal = InteractionPresentModalSpec.builder();
 			modal.title("Send a message to Report " + (mode.equals("tosender") ? "Sender" : "Subject"));
 			modal.customId("reportreply/" + acc.getAccountID() + "/" + mode);
-			modal.addComponent(ActionRow.of(TextInput.paragraph("reply", "Message to send")));
+			modal.addComponent(Label.of("Message to send", TextInput.paragraph("reply")));
 			return event.presentModal(modal.build());
 		}
 

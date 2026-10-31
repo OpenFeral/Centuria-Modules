@@ -4,7 +4,7 @@ import org.asf.centuria.discord.LinkUtils;
 
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.interaction.ButtonInteractionEvent;
-import discord4j.core.object.component.ActionRow;
+import discord4j.core.object.component.Label;
 import discord4j.core.object.component.TextInput;
 import discord4j.core.spec.InteractionApplicationCommandCallbackSpec;
 import discord4j.core.spec.InteractionPresentModalSpec;
@@ -37,7 +37,7 @@ public class PairAccountHandler {
 			// Build form
 			InteractionPresentModalSpec.Builder modal = InteractionPresentModalSpec.builder();
 			modal.title("Pair existing Centuria account");
-			modal.addComponent(ActionRow.of(TextInput.small("codeinput", "Your account pairing code").prefilled(code)));
+			modal.addComponent(Label.of("Your account pairing code", TextInput.small("codeinput").prefilled(code)));
 			modal.customId("dummy");
 
 			// Show form

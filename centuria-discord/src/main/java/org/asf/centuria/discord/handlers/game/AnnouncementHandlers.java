@@ -128,7 +128,7 @@ public class AnnouncementHandlers implements IEventReceiver {
 
 	private void announce(boolean ping, String message, Map<String, InputStream> files) {
 		// Send to all guild log channels
-		for (Guild g : DiscordBotModule.getClient().getGuilds().toIterable()) {
+		for (Guild g : DiscordBotModule.getGatewayClient().getGuilds().toIterable()) {
 			String guildID = g.getId().asString();
 			JsonObject config = ServerConfigUtils.getServerConfig(guildID);
 			if (config.has("announcementChannel")) {
@@ -148,7 +148,7 @@ public class AnnouncementHandlers implements IEventReceiver {
 					if (files != null) {
 						// Attach files
 						for (String file : files.keySet()) {
-							builder.addFile(file, files.get(file));
+							builder.addFile(file, null, files.get(file));
 						}
 					}
 					channel.createMessage(srvMessage).block();

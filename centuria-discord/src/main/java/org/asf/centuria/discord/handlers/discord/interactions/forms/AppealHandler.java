@@ -68,7 +68,7 @@ public class AppealHandler {
 		report += "--------------------------------------------------------------------------------------------------\n";
 
 		// Send to all guild log channels
-		for (Guild g : DiscordBotModule.getClient().getGuilds().toIterable()) {
+		for (Guild g : DiscordBotModule.getGatewayClient().getGuilds().toIterable()) {
 			String guildID = g.getId().asString();
 			JsonObject config = ServerConfigUtils.getServerConfig(guildID);
 			if (config.has("moderationLogChannel")) {
@@ -91,7 +91,7 @@ public class AppealHandler {
 
 				// Add report
 				try {
-					msg.addFile("appeal.txt", new ByteArrayInputStream(report.getBytes("UTF-8")));
+					msg.addFile("appeal.txt", null, new ByteArrayInputStream(report.getBytes("UTF-8")));
 				} catch (UnsupportedEncodingException e1) {
 				}
 

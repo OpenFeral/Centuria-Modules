@@ -1,6 +1,7 @@
 package org.asf.centuria.discord.handlers.discord;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 import org.asf.centuria.accounts.AccountManager;
 import org.asf.centuria.accounts.CenturiaAccount;
@@ -45,13 +46,14 @@ import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.interaction.ButtonInteractionEvent;
 import discord4j.core.object.component.ActionRow;
 import discord4j.core.object.component.Button;
-import discord4j.core.object.component.LayoutComponent;
+import discord4j.core.object.component.TopLevelMessageComponent;
 import discord4j.core.object.entity.Message;
 import discord4j.core.spec.EmbedCreateSpec;
 import discord4j.core.spec.InteractionApplicationCommandCallbackSpec;
 import discord4j.core.spec.MessageCreateSpec;
 import discord4j.core.spec.MessageEditSpec;
 import discord4j.discordjson.json.MessageReferenceData;
+import discord4j.discordjson.possible.Possible;
 import discord4j.rest.util.Color;
 import reactor.core.publisher.Mono;
 
@@ -231,15 +233,15 @@ public class InteractionButtonHandler {
 					embed.color(Color.RED);
 					embed.description("Your appeal has been rejected.");
 					embed.footer(DiscordBotModule.getServerName(),
-							DiscordBotModule.getClient().getSelf().block().getAvatarUrl());
+							DiscordBotModule.getGatewayClient().getSelf().block().getAvatarUrl());
 
 					// Message object
 					MessageCreateSpec.Builder msg = MessageCreateSpec.builder();
 					msg.addEmbed(embed.build());
 
 					// Send response
-					DiscordBotModule.getClient().getUserById(Snowflake.of(userID)).block().getPrivateChannel().block()
-							.createMessage(msg.build()).subscribe();
+					DiscordBotModule.getGatewayClient().getUserById(Snowflake.of(userID)).block().getPrivateChannel()
+							.block().createMessage(msg.build()).subscribe();
 				} catch (Exception e) {
 				}
 			}
@@ -249,7 +251,8 @@ public class InteractionButtonHandler {
 			Message oMsg = gateway
 					.getMessageById(Snowflake.of(ref.channelId().get().asString()), Snowflake.of(ref.messageId().get()))
 					.block();
-			oMsg.edit(MessageEditSpec.builder().components(new ArrayList<LayoutComponent>()).build()).block();
+			oMsg.edit(MessageEditSpec.builder()
+					.components(Possible.of(Optional.of(new ArrayList<TopLevelMessageComponent>()))).build()).block();
 			event.deferEdit().block();
 			event.getMessage().get().getChannel().block()
 					.createMessage("Rejected " + acc.getDisplayName() + "'s appeal").block();
@@ -290,7 +293,8 @@ public class InteractionButtonHandler {
 			Message oMsg = gateway
 					.getMessageById(Snowflake.of(ref.channelId().get().asString()), Snowflake.of(ref.messageId().get()))
 					.block();
-			oMsg.edit(MessageEditSpec.builder().components(new ArrayList<LayoutComponent>()).build()).block();
+			oMsg.edit(MessageEditSpec.builder()
+					.components(Possible.of(Optional.of(new ArrayList<TopLevelMessageComponent>()))).build()).block();
 			event.deferEdit().block();
 			event.getMessage().get().getChannel().block()
 					.createMessage("Accepted " + acc.getDisplayName() + "'s appeal").block();

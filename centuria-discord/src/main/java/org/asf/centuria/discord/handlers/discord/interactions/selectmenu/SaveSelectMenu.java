@@ -1,6 +1,7 @@
 package org.asf.centuria.discord.handlers.discord.interactions.selectmenu;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 import org.asf.centuria.accounts.CenturiaAccount;
 import org.asf.centuria.accounts.SaveMode;
@@ -10,6 +11,7 @@ import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.interaction.SelectMenuInteractionEvent;
 import discord4j.core.spec.EmbedCreateSpec;
 import discord4j.core.spec.InteractionReplyEditSpec;
+import discord4j.discordjson.possible.Possible;
 import discord4j.rest.util.Color;
 import reactor.core.publisher.Mono;
 
@@ -45,16 +47,17 @@ public class SaveSelectMenu {
 		if (!account.getSaveManager().switchSave(save))
 			return event
 					.editReply(InteractionReplyEditSpec.builder()
-							.embeds(Arrays.asList(EmbedCreateSpec.builder().title("Save switch failure")
-									.description("Could not switch to '" + save + "'").color(Color.RED).build()))
+							.embeds(Possible.of(Optional.of(Arrays.asList(EmbedCreateSpec.builder()
+									.title("Save switch failure").description("Could not switch to '" + save + "'")
+									.color(Color.RED).build()))))
 							.build());
 		account.kickDirect("SYSTEM", "Save data switched");
 
 		// Default response
 		return event
 				.editReply(InteractionReplyEditSpec.builder()
-						.embeds(Arrays.asList(EmbedCreateSpec.builder().title("Switched save")
-								.description("Successfully switched to '" + save + "'").color(Color.GREEN).build()))
+						.embeds(Possible.of(Optional.of(Arrays.asList(EmbedCreateSpec.builder().title("Switched save")
+								.description("Successfully switched to '" + save + "'").color(Color.GREEN).build()))))
 						.build());
 	}
 

@@ -97,7 +97,7 @@ public class ForgotPasswordHandler extends HttpPushHandler implements IEventRece
 								Button.primary("dismissDelete", "Dismiss")));
 
 				// Send response
-				DiscordBotModule.getClient().getUserById(Snowflake.of(userID)).block().getPrivateChannel().block()
+				DiscordBotModule.getGatewayClient().getUserById(Snowflake.of(userID)).block().getPrivateChannel().block()
 						.createMessage(msg.build()).subscribe();
 			} catch (Exception e) {
 			}

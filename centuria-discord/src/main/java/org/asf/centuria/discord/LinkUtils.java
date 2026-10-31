@@ -279,7 +279,7 @@ public class LinkUtils {
 					msg.addComponent(ActionRow.of(Button.primary("dismiss", "Dismiss")));
 
 				// Send response
-				DiscordBotModule.getClient().getUserById(Snowflake.of(userID)).block().getPrivateChannel().block()
+				DiscordBotModule.getGatewayClient().getUserById(Snowflake.of(userID)).block().getPrivateChannel().block()
 						.createMessage(msg.build()).subscribe();
 			} catch (Exception e) {
 			}
@@ -300,7 +300,7 @@ public class LinkUtils {
 				.getAsString();
 		User user = null;
 		try {
-			user = DiscordBotModule.getClient().getUserById(Snowflake.of(userID)).block();
+			user = DiscordBotModule.getGatewayClient().getUserById(Snowflake.of(userID)).block();
 		} catch (Exception e) {
 		}
 		if (user != null)

@@ -5,7 +5,7 @@ import org.asf.centuria.accounts.CenturiaAccount;
 
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.interaction.ButtonInteractionEvent;
-import discord4j.core.object.component.ActionRow;
+import discord4j.core.object.component.Label;
 import discord4j.core.object.component.TextInput;
 import discord4j.core.spec.InteractionPresentModalSpec;
 import reactor.core.publisher.Mono;
@@ -35,11 +35,11 @@ public class AppealButtonHandler {
 					InteractionPresentModalSpec.Builder modal = InteractionPresentModalSpec.builder();
 					modal.title("Centuria Online Ban Appeal");
 					modal.customId("appealform");
-					modal.addComponent(ActionRow.of(TextInput.small("short_why", "What was the reason for your ban?")));
+					modal.addComponent(Label.of("What was the reason for your ban?", TextInput.small("short_why")));
 					modal.addComponent(
-							ActionRow.of(TextInput.paragraph("appeal", "Why do you believe you should be pardoned?")));
-					modal.addComponent(ActionRow
-							.of(TextInput.small("will_follow_rules", "Will you follow the rules in the game?")));
+							Label.of("Why do you believe you should be pardoned?", TextInput.paragraph("appeal")));
+					modal.addComponent(
+							Label.of("Will you follow the rules in the game?", TextInput.small("will_follow_rules")));
 					return event.presentModal(modal.build());
 				} else {
 					// Reply error

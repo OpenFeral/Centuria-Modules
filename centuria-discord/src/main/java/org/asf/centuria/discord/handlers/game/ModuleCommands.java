@@ -95,7 +95,7 @@ public class ModuleCommands implements IEventReceiver {
 					((InetSocketAddress) ev.getClient().getSocket().getRemoteSocketAddress()).getAddress()
 							.getHostAddress(),
 					true, false);
-			User discordUser = DiscordBotModule.getClient().getUserById(Snowflake.of(userId)).block();
+			User discordUser = DiscordBotModule.getGatewayClient().getUserById(Snowflake.of(userId)).block();
 			ev.respond("Success! Current Centuria account has been paired with the Discord account "
 					+ discordUser.getTag() + "!");
 
@@ -150,7 +150,7 @@ public class ModuleCommands implements IEventReceiver {
 					((InetSocketAddress) ev.getClient().getSocket().getRemoteSocketAddress()).getAddress()
 							.getHostAddress(),
 					true, true);
-			User discordUser = DiscordBotModule.getClient().getUserById(Snowflake.of(userId)).block();
+			User discordUser = DiscordBotModule.getGatewayClient().getUserById(Snowflake.of(userId)).block();
 			ev.respond("Success! Current Centuria account has been paired with the Discord account "
 					+ discordUser.getTag() + "!");
 			break;
@@ -327,7 +327,7 @@ public class ModuleCommands implements IEventReceiver {
 				String res = "Discord user ID: " + userID;
 				try {
 					res = "Discord user: "
-							+ DiscordBotModule.getClient().getUserById(Snowflake.of(userID)).block().getTag();
+							+ DiscordBotModule.getGatewayClient().getUserById(Snowflake.of(userID)).block().getTag();
 				} catch (Exception e) {
 				}
 				ev.respond(res);

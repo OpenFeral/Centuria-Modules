@@ -47,7 +47,7 @@ public class FeedbackHandler implements IXtPacket<FeedbackHandler> {
 					+ "**";
 
 			// Send report
-			for (Guild g : DiscordBotModule.getClient().getGuilds().toIterable()) {
+			for (Guild g : DiscordBotModule.getGatewayClient().getGuilds().toIterable()) {
 				// Load guild
 				String guildID = g.getId().asString();
 				JsonObject config = ServerConfigUtils.getServerConfig(guildID);
@@ -63,7 +63,7 @@ public class FeedbackHandler implements IXtPacket<FeedbackHandler> {
 					// Build message
 					MessageCreateSpec.Builder msg = MessageCreateSpec.builder();
 					msg.content(srvMessage);
-					msg.addFile("report.txt", new ByteArrayInputStream(report.getBytes("UTF-8")));
+					msg.addFile("report.txt", null, new ByteArrayInputStream(report.getBytes("UTF-8")));
 					msg.addComponent(ActionRow
 							.of(Button.success("feedbackreply/" + reporter.getAccountID(), "Reply to feedback")));
 

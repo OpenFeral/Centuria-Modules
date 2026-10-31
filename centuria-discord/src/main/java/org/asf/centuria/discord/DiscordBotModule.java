@@ -87,8 +87,17 @@ public class DiscordBotModule implements ICenturiaModule {
 	 * 
 	 * @return GatewayDiscordClient instance
 	 */
-	public static GatewayDiscordClient getClient() {
+	public static GatewayDiscordClient getGatewayClient() {
 		return gateway;
+	}
+
+	/**
+	 * Retrieves the discord bot client
+	 * 
+	 * @return DiscordClient instance
+	 */
+	public static DiscordClient getDiscordClient() {
+		return client;
 	}
 
 	@Override
@@ -180,14 +189,13 @@ public class DiscordBotModule implements ICenturiaModule {
 					.addOption(CommandHandler.mute()).addOption(CommandHandler.ipBan())
 					.addOption(CommandHandler.makeModerator()).addOption(CommandHandler.makeAdmin())
 					.addOption(CommandHandler.removePerms()).addOption(CommandHandler.retryAutomaticUpdate())
-					.addOption(CommandHandler.forceInstallUpdate())
-					.addOption(CommandHandler.generateApplicationCode()).addOption(CommandHandler.apply())
-					.addOption(CommandHandler.createApplicationPanel()).addOption(CommandHandler.tradeBan())
-					.addOption(CommandHandler.tradeTempBan()).addOption(CommandHandler.tradePardon()).build();
+					.addOption(CommandHandler.forceInstallUpdate()).addOption(CommandHandler.generateApplicationCode())
+					.addOption(CommandHandler.apply()).addOption(CommandHandler.createApplicationPanel())
+					.addOption(CommandHandler.tradeBan()).addOption(CommandHandler.tradeTempBan())
+					.addOption(CommandHandler.tradePardon()).build();
 
 			// Connect
-			client.gateway()
-					.setEnabledIntents(IntentSet.of(Intent.DIRECT_MESSAGES, Intent.GUILD_MEMBERS, Intent.GUILDS))
+			client.gateway().setEnabledIntents(IntentSet.of(Intent.DIRECT_MESSAGES, Intent.GUILDS))
 					.withGateway(gateway -> {
 						// Button handler
 						Mono<Void> ev = gateway.on(ButtonInteractionEvent.class, event -> {
