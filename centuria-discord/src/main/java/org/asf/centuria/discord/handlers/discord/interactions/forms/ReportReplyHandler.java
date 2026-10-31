@@ -53,7 +53,7 @@ public class ReportReplyHandler {
 		try {
 			if (LinkUtils.isPairedWithDiscord(account)) {
 				String discord = LinkUtils.getDiscordAccountFrom(account);
-				User owner = DiscordBotModule.getClient().getUserById(Snowflake.of(discord)).block();
+				User owner = DiscordBotModule.getGatewayClient().getUserById(Snowflake.of(discord)).block();
 
 				EmbedCreateSpec.Builder embed = EmbedCreateSpec.builder();
 				if (mode.equals("tosender")) {

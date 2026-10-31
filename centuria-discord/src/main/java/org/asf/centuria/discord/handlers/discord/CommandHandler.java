@@ -31,6 +31,7 @@ import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.interaction.ApplicationCommandInteractionEvent;
 import discord4j.core.object.command.ApplicationCommandOption;
 import discord4j.core.object.component.ActionRow;
+import discord4j.core.object.component.Label;
 import discord4j.core.object.component.SelectMenu;
 import discord4j.core.object.component.SelectMenu.Option;
 import discord4j.core.object.component.TextInput;
@@ -417,7 +418,7 @@ public class CommandHandler {
 
 				// Show modal
 				event.presentModal("Application Panel Creation", "createapplicationpanel/" + application,
-						Arrays.asList(ActionRow.of(TextInput.paragraph("message", "Message description", 1, 3000))))
+						Arrays.asList(Label.of("Message description", TextInput.paragraph("message", 1, 3000))))
 						.block();
 			}
 			case "generateapplicationcode": {
@@ -515,8 +516,8 @@ public class CommandHandler {
 				String res = "Discord user ID: " + userID;
 				try {
 					res = "Discord user: `"
-							+ DiscordBotModule.getClient().getUserById(Snowflake.of(userID)).block().getTag() + " ("
-							+ userID + ")`";
+							+ DiscordBotModule.getGatewayClient().getUserById(Snowflake.of(userID)).block().getTag()
+							+ " (" + userID + ")`";
 				} catch (Exception e) {
 				}
 				event.reply(res).block();
@@ -962,7 +963,7 @@ public class CommandHandler {
 				InteractionPresentModalSpec.Builder modal = InteractionPresentModalSpec.builder();
 				modal.title("Send a anonymous message to player...");
 				modal.customId("reportreply/" + acc.getAccountID() + "/tosubject");
-				modal.addComponent(ActionRow.of(TextInput.paragraph("reply", "Message to send")));
+				modal.addComponent(Label.of("Message to send", TextInput.paragraph("reply")));
 				return event.presentModal(modal.build());
 			}
 			case "removeperms": {
@@ -1039,10 +1040,11 @@ public class CommandHandler {
 				}
 
 				// Log
-				EventBus.getInstance().dispatchEvent(new MiscModerationEvent("permissions.update",
-						"Removed all permissions from " + acc.getDisplayName() + "!",
-						Map.of("Former permission level", permLevel2, "New permission level", "member"),
-						modacc.getAccountID(), acc));
+				EventBus.getInstance()
+						.dispatchEvent(new MiscModerationEvent("permissions.update",
+								"Removed all permissions from " + acc.getDisplayName() + "!",
+								Map.of("Former permission level", permLevel2, "New permission level", "member"),
+								modacc.getAccountID(), acc));
 
 				return event.reply("Removed permissions from " + acc.getDisplayName());
 			}
@@ -1389,7 +1391,7 @@ public class CommandHandler {
 
 				// Show modal
 				event.presentModal("Account Panel Creation", "createaccountpanel",
-						Arrays.asList(ActionRow.of(TextInput.paragraph("message", "Message description", 1, 3000))))
+						Arrays.asList(Label.of("Message description", TextInput.paragraph("message", 1, 3000))))
 						.block();
 
 				break;

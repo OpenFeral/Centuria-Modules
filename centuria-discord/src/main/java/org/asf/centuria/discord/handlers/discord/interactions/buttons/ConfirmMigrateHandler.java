@@ -102,7 +102,7 @@ public class ConfirmMigrateHandler {
 					}
 
 					// Add file
-					msg.addFile("inventory.zip", new ByteArrayInputStream(strm.toByteArray()));
+					msg.addFile("inventory.zip", null, new ByteArrayInputStream(strm.toByteArray()));
 
 					// Send message
 					event.getInteraction().getChannel().block().createMessage(msg.build()).block();

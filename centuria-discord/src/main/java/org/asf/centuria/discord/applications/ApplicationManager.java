@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.ConcurrentModificationException;
+import java.util.Optional;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -35,8 +36,9 @@ import discord4j.core.event.domain.interaction.ComponentInteractionEvent;
 import discord4j.core.event.domain.interaction.ModalSubmitInteractionEvent;
 import discord4j.core.object.component.ActionRow;
 import discord4j.core.object.component.Button;
-import discord4j.core.object.component.LayoutComponent;
+import discord4j.core.object.component.Label;
 import discord4j.core.object.component.TextInput;
+import discord4j.core.object.component.TopLevelMessageComponent;
 import discord4j.core.object.entity.Guild;
 import discord4j.core.object.entity.Member;
 import discord4j.core.object.entity.Message;
@@ -55,6 +57,7 @@ import discord4j.discordjson.json.ComponentData;
 import discord4j.discordjson.json.ImmutableMessageEditRequest.Builder;
 import discord4j.discordjson.json.MessageEditRequest;
 import discord4j.discordjson.json.MessageReferenceData;
+import discord4j.discordjson.possible.Possible;
 import discord4j.rest.entity.RestChannel;
 import discord4j.rest.entity.RestMessage;
 import discord4j.rest.util.Color;
@@ -139,7 +142,7 @@ public class ApplicationManager {
 	// Refreshes a application panel
 	private static void refreshPanel(PanelInfo panel) {
 		// Find guild
-		Guild guild = DiscordBotModule.getClient().getGuildById(Snowflake.of(panel.guildID)).block();
+		Guild guild = DiscordBotModule.getGatewayClient().getGuildById(Snowflake.of(panel.guildID)).block();
 
 		// Find channel
 		GuildChannel channel = guild.getChannelById(Snowflake.of(panel.channelID)).block();
@@ -201,20 +204,20 @@ public class ApplicationManager {
 				EmbedCreateSpec.Builder embed = EmbedCreateSpec.builder();
 				embed.color(color);
 				embed.thumbnail(guild.getIconUrl(Format.PNG)
-						.orElse(DiscordBotModule.getClient().getSelf().block().getAvatarUrl()));
+						.orElse(DiscordBotModule.getGatewayClient().getSelf().block().getAvatarUrl()));
 				embed.title(panel.def.name);
 				embed.description(message.getData().block().embeds().get(0).description().get());
-				embed.footer(status, DiscordBotModule.getClient().getSelf().block().getAvatarUrl());
-				msg.embeds(Arrays.asList(embed.build().asRequest()));
+				embed.footer(status, DiscordBotModule.getGatewayClient().getSelf().block().getAvatarUrl());
+				msg.embeds(Possible.of(Optional.of(Arrays.asList(embed.build().asRequest()))));
 
 				// Buttons
 				if (disabled)
-					msg.components(Arrays.asList(ActionRow
+					msg.components(Possible.of(Optional.of(Arrays.asList(ActionRow
 							.of(Button.success("application/applyfor/" + panel.application, "Apply").disabled())
-							.getData()));
+							.getData()))));
 				else
-					msg.components(Arrays.asList(ActionRow
-							.of(Button.success("application/applyfor/" + panel.application, "Apply")).getData()));
+					msg.components(Possible.of(Optional.of(Arrays.asList(ActionRow
+							.of(Button.success("application/applyfor/" + panel.application, "Apply")).getData()))));
 
 				// Update
 				message.edit(msg.build()).block();
@@ -283,7 +286,7 @@ public class ApplicationManager {
 			embed.color(Color.BLUE);
 			embed.description("Do you wish to begin the application process?");
 			embed.footer(DiscordBotModule.getServerName(),
-					DiscordBotModule.getClient().getSelf().block().getAvatarUrl());
+					DiscordBotModule.getGatewayClient().getSelf().block().getAvatarUrl());
 
 			// Message object
 			MessageCreateSpec.Builder msg = MessageCreateSpec.builder();
@@ -430,12 +433,14 @@ public class ApplicationManager {
 						embed.description("Here you can review the application, select action below to review");
 
 						// Get channel and update
-						Guild guild = DiscordBotModule.getClient().getGuildById(Snowflake.of(def.reviewServer)).block();
+						Guild guild = DiscordBotModule.getGatewayClient().getGuildById(Snowflake.of(def.reviewServer))
+								.block();
 						RestChannel ch = guild.getChannelById(Snowflake.of(def.reviewChannel)).block().getRestChannel();
 						ch.getRestMessage(Snowflake.of(memory.get("submissionID").getAsLong()))
-								.edit(MessageEditSpec.builder().embeds(Arrays.asList(embed.build()))
-										.components(new ArrayList<LayoutComponent>()).build().asRequest()
-										.getJsonPayload())
+								.edit(MessageEditSpec.builder()
+										.embeds(Possible.of(Optional.of(Arrays.asList(embed.build()))))
+										.components(Possible.of(Optional.of(new ArrayList<TopLevelMessageComponent>())))
+										.build().asRequest().getJsonPayload())
 								.block();
 					} catch (Exception e) {
 					}
@@ -449,7 +454,7 @@ public class ApplicationManager {
 					embed.color(Color.RED);
 					embed.description("The application has been cancelled.\nReason: " + reason);
 					embed.footer(DiscordBotModule.getServerName(),
-							DiscordBotModule.getClient().getSelf().block().getAvatarUrl());
+							DiscordBotModule.getGatewayClient().getSelf().block().getAvatarUrl());
 
 					// Message object
 					MessageCreateSpec.Builder msg = MessageCreateSpec.builder();
@@ -570,7 +575,7 @@ public class ApplicationManager {
 				return event.reply("**Error:** The member has no Centuria account.");
 
 			// Get user
-			User user = DiscordBotModule.getClient().getUserById(Snowflake.of(userID)).block();
+			User user = DiscordBotModule.getGatewayClient().getUserById(Snowflake.of(userID)).block();
 
 			// Load application memory
 			JsonObject memory;
@@ -662,7 +667,7 @@ public class ApplicationManager {
 				return event.reply("**Error:** The member has no Centuria account.");
 
 			// Get user
-			User user = DiscordBotModule.getClient().getUserById(Snowflake.of(userID)).block();
+			User user = DiscordBotModule.getGatewayClient().getUserById(Snowflake.of(userID)).block();
 
 			// Load application memory
 			JsonObject memory;
@@ -757,11 +762,11 @@ public class ApplicationManager {
 				for (int i = 0; i < cmd.parameters.get("questions").getAsInt(); i++) {
 					JsonObject question = cmd.parameters.get("question" + (i + 1)).getAsJsonObject();
 					if (question.get("type").getAsString().equals("singleline"))
-						modal.addComponent(ActionRow.of(TextInput.small(question.get("text").getAsString(),
-								question.get("text").getAsString(), 2, 1000)));
+						modal.addComponent(Label.of(question.get("text").getAsString(),
+								TextInput.small(question.get("text").getAsString(), 2, 1000)));
 					else
-						modal.addComponent(ActionRow.of(TextInput.paragraph(question.get("text").getAsString(),
-								question.get("text").getAsString(), 2, 1000)));
+						modal.addComponent(Label.of(question.get("text").getAsString(),
+								TextInput.paragraph(question.get("text").getAsString(), 2, 1000)));
 				}
 
 				// Show modal
@@ -859,7 +864,7 @@ public class ApplicationManager {
 
 			// Add file
 			msg = MessageCreateSpec.builder();
-			msg.addFile("inventory.zip", new ByteArrayInputStream(strm.toByteArray()));
+			msg.addFile("inventory.zip", null, new ByteArrayInputStream(strm.toByteArray()));
 			event.getInteraction().getChannel().block().createMessage(msg.build()).block();
 
 			// Load command
@@ -919,7 +924,7 @@ public class ApplicationManager {
 						+ def.name + "`");
 				embed.thumbnail(user.getAvatarUrl());
 				embed.footer(DiscordBotModule.getServerName(),
-						DiscordBotModule.getClient().getSelf().block().getAvatarUrl());
+						DiscordBotModule.getGatewayClient().getSelf().block().getAvatarUrl());
 
 				// Add embed
 				msg.addEmbed(embed.build());
@@ -927,7 +932,8 @@ public class ApplicationManager {
 				// Send message
 				try {
 					// Get channel and send
-					Guild guild = DiscordBotModule.getClient().getGuildById(Snowflake.of(def.reviewServer)).block();
+					Guild guild = DiscordBotModule.getGatewayClient().getGuildById(Snowflake.of(def.reviewServer))
+							.block();
 					RestChannel ch = guild.getChannelById(Snowflake.of(def.reviewChannel)).block().getRestChannel();
 					ch.createMessage(msg.build().asRequest()).block();
 
@@ -943,7 +949,7 @@ public class ApplicationManager {
 							embed.color(Color.BLUE);
 							embed.thumbnail(user.getAvatarUrl());
 							embed.footer(DiscordBotModule.getServerName(),
-									DiscordBotModule.getClient().getSelf().block().getAvatarUrl());
+									DiscordBotModule.getGatewayClient().getSelf().block().getAvatarUrl());
 							JsonObject data = fields.get(key).getAsJsonObject();
 							for (String k : data.keySet())
 								embed.addField(k, data.get(k).getAsString(), false);
@@ -1111,11 +1117,18 @@ public class ApplicationManager {
 					case "mute": {
 						// Mute the account
 						JsonObject muteInfo = new JsonObject();
-						if (cmd.parameters.has("reason"))
-							muteInfo.addProperty("reason", cmd.parameters.get("reason").getAsString());
 						muteInfo.addProperty("type", "mute");
-						muteInfo.addProperty("unmuteTimestamp", System.currentTimeMillis()
-								+ (cmd.parameters.get("banDurationSeconds").getAsInt() * 1000));
+						if (cmd.parameters.get("type").getAsString().equals("permanent")) {
+							if (cmd.parameters.has("reason"))
+								muteInfo.addProperty("reason", cmd.parameters.get("reason").getAsString());
+							muteInfo.addProperty("unmuteTimestamp", -1);
+						} else if (cmd.parameters.get("type").getAsString().equals("temporary")) {
+							if (cmd.parameters.has("reason"))
+								muteInfo.addProperty("reason", cmd.parameters.get("reason").getAsString());
+							muteInfo.addProperty("unmuteTimestamp", System.currentTimeMillis()
+									+ (cmd.parameters.get("muteDurationSeconds").getAsInt() * 1000));
+						} else
+							throw new IllegalArgumentException("Invalid mute type");
 						account.getSaveSharedInventory().setItem("penalty", muteInfo);
 
 						// Move to next
@@ -1339,7 +1352,7 @@ public class ApplicationManager {
 					case "addrole": {
 						long server = cmd.parameters.get("server").getAsLong();
 						long role = cmd.parameters.get("role").getAsLong();
-						Member mem = DiscordBotModule.getClient().getGuildById(Snowflake.of(server)).block()
+						Member mem = DiscordBotModule.getGatewayClient().getGuildById(Snowflake.of(server)).block()
 								.getMemberById(user.getId()).block();
 						if (!mem.getRoleIds().stream().anyMatch(t -> t.asLong() == role))
 							mem.addRole(Snowflake.of(role)).block();
@@ -1359,7 +1372,7 @@ public class ApplicationManager {
 					case "removerole": {
 						long server = cmd.parameters.get("server").getAsLong();
 						long role = cmd.parameters.get("role").getAsLong();
-						Member mem = DiscordBotModule.getClient().getGuildById(Snowflake.of(server)).block()
+						Member mem = DiscordBotModule.getGatewayClient().getGuildById(Snowflake.of(server)).block()
 								.getMemberById(user.getId()).block();
 						if (mem.getRoleIds().stream().anyMatch(t -> t.asLong() == role))
 							mem.removeRole(Snowflake.of(role)).block();
@@ -1609,7 +1622,7 @@ public class ApplicationManager {
 				case "addrole": {
 					long server = cmd.parameters.get("server").getAsLong();
 					long role = cmd.parameters.get("role").getAsLong();
-					Member mem = DiscordBotModule.getClient().getGuildById(Snowflake.of(server)).block()
+					Member mem = DiscordBotModule.getGatewayClient().getGuildById(Snowflake.of(server)).block()
 							.getMemberById(user.getId()).block();
 					if (!mem.getRoleIds().stream().anyMatch(t -> t.asLong() == role))
 						mem.addRole(Snowflake.of(role)).block();
@@ -1620,7 +1633,7 @@ public class ApplicationManager {
 				case "removerole": {
 					long server = cmd.parameters.get("server").getAsLong();
 					long role = cmd.parameters.get("role").getAsLong();
-					Member mem = DiscordBotModule.getClient().getGuildById(Snowflake.of(server)).block()
+					Member mem = DiscordBotModule.getGatewayClient().getGuildById(Snowflake.of(server)).block()
 							.getMemberById(user.getId()).block();
 					if (mem.getRoleIds().stream().anyMatch(t -> t.asLong() == role))
 						mem.removeRole(Snowflake.of(role)).block();
@@ -1835,11 +1848,18 @@ public class ApplicationManager {
 				case "mute": {
 					// Mute the account
 					JsonObject muteInfo = new JsonObject();
-					if (cmd.parameters.has("reason"))
-						muteInfo.addProperty("reason", cmd.parameters.get("reason").getAsString());
 					muteInfo.addProperty("type", "mute");
-					muteInfo.addProperty("unmuteTimestamp",
-							System.currentTimeMillis() + (cmd.parameters.get("banDurationSeconds").getAsInt() * 1000));
+					if (cmd.parameters.get("type").getAsString().equals("permanent")) {
+						if (cmd.parameters.has("reason"))
+							muteInfo.addProperty("reason", cmd.parameters.get("reason").getAsString());
+						muteInfo.addProperty("unmuteTimestamp", -1);
+					} else if (cmd.parameters.get("type").getAsString().equals("temporary")) {
+						if (cmd.parameters.has("reason"))
+							muteInfo.addProperty("reason", cmd.parameters.get("reason").getAsString());
+						muteInfo.addProperty("unmuteTimestamp", System.currentTimeMillis()
+								+ (cmd.parameters.get("muteDurationSeconds").getAsInt() * 1000));
+					} else
+						throw new IllegalArgumentException("Invalid mute type");
 					account.getSaveSharedInventory().setItem("penalty", muteInfo);
 					break;
 				}

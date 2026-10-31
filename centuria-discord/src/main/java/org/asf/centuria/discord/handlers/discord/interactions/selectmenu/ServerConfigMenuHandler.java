@@ -1,21 +1,18 @@
 package org.asf.centuria.discord.handlers.discord.interactions.selectmenu;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.asf.centuria.discord.ServerConfigUtils;
 
 import com.google.gson.JsonObject;
 
+import discord4j.common.util.Snowflake;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.interaction.SelectMenuInteractionEvent;
 import discord4j.core.object.component.ActionRow;
 import discord4j.core.object.component.SelectMenu;
-import discord4j.core.object.component.SelectMenu.Option;
+import discord4j.core.object.component.SelectMenu.DefaultValue;
 import discord4j.core.object.entity.Guild;
-import discord4j.core.object.entity.Role;
-import discord4j.core.object.entity.channel.GuildChannel;
-import discord4j.core.object.entity.channel.Channel.Type;
-import discord4j.core.retriever.EntityRetrievalStrategy;
 import discord4j.core.spec.InteractionApplicationCommandCallbackSpec;
 import reactor.core.publisher.Mono;
 
@@ -71,55 +68,11 @@ public class ServerConfigMenuHandler {
 		if (obj.has(configOptionName))
 			lastSelectedChannel = obj.get(configOptionName).getAsString();
 
-		// Build role list
-		int i = 1;
-		ArrayList<Option> chSelectionList = new ArrayList<Option>();
-		chSelectionList.add(Option.of("Reset", "c/reset"));
-		for (GuildChannel channel : guild.getChannels(EntityRetrievalStrategy.STORE_FALLBACK_REST).toIterable()) {
-			if (channel.getType() != Type.GUILD_TEXT)
-				continue;
-
-			String gChId = channel.getId().asString();
-			String gChName = channel.getName();
-
-			// Show channels matching the filter first
-			if (!filterApplies(gChName, filter))
-				continue;
-			Option opt = Option.of(gChName, gChId);
-			if (lastSelectedChannel != null && lastSelectedChannel.equals(gChId))
-				opt = opt.withDefault(true);
-			chSelectionList.add(opt);
-
-			i++;
-			// Prevent size from going past the discord limit
-			if (i == 25)
-				break;
-		}
-		for (GuildChannel channel : guild.getChannels(EntityRetrievalStrategy.STORE_FALLBACK_REST).toIterable()) {
-			if (channel.getType() != Type.GUILD_TEXT)
-				continue;
-
-			String gChId = channel.getId().asString();
-			String gChName = channel.getName();
-
-			// Dont show channels that have already been shown
-			if (filterApplies(gChName, filter))
-				continue;
-			Option opt = Option.of(gChName, gChId);
-			if (lastSelectedChannel != null && lastSelectedChannel.equals(gChId))
-				opt = opt.withDefault(true);
-			chSelectionList.add(opt);
-
-			i++;
-			// Prevent size from going past the discord limit
-			if (i == 25)
-				break;
-		}
-
 		// Build message
 		InteractionApplicationCommandCallbackSpec.Builder msg = InteractionApplicationCommandCallbackSpec.builder();
 		msg.content("Channel configuration: **" + channelName + "**");
-		msg.addComponent(ActionRow.of(SelectMenu.of("serveroptionselection/" + configOptionName, chSelectionList)));
+		msg.addComponent(ActionRow.of(SelectMenu.ofChannel("serveroptionselection/" + configOptionName,
+				List.of(DefaultValue.of(Snowflake.of(lastSelectedChannel), DefaultValue.Type.CHANNEL)))));
 
 		// Return message
 		return msg.ephemeral(true).build();
@@ -134,66 +87,13 @@ public class ServerConfigMenuHandler {
 		if (obj.has(configOptionName))
 			lastSelectedRole = obj.get(configOptionName).getAsString();
 
-		// Build role list
-		int i = 1;
-		ArrayList<Option> roleSelectionList = new ArrayList<Option>();
-		roleSelectionList.add(Option.of("Reset", "c/reset"));
-		for (Role role : guild.getRoles(EntityRetrievalStrategy.STORE_FALLBACK_REST).toIterable()) {
-			if (role.isEveryone())
-				continue;
-
-			String gRoleId = role.getId().asString();
-			String gRoleName = role.getName();
-
-			// Show roles matching the filter first
-			if (!filterApplies(gRoleName, filter))
-				continue;
-			Option opt = Option.of(gRoleName, gRoleId);
-			if (lastSelectedRole != null && lastSelectedRole.equals(gRoleId))
-				opt = opt.withDefault(true);
-			roleSelectionList.add(opt);
-
-			i++;
-			// Prevent size from going past the discord limit
-			if (i == 25)
-				break;
-		}
-		for (Role role : guild.getRoles(EntityRetrievalStrategy.STORE_FALLBACK_REST).toIterable()) {
-			if (role.isEveryone())
-				continue;
-
-			String gRoleId = role.getId().asString();
-			String gRoleName = role.getName();
-
-			// Dont show roles that were already shown
-			if (filterApplies(gRoleName, filter))
-				continue;
-			Option opt = Option.of(gRoleName, gRoleId);
-			if (lastSelectedRole != null && lastSelectedRole.equals(gRoleId))
-				opt = opt.withDefault(true);
-			roleSelectionList.add(opt);
-
-			i++;
-			// Prevent size from going past the discord limit
-			if (i == 25)
-				break;
-		}
-
 		// Build message
 		InteractionApplicationCommandCallbackSpec.Builder msg = InteractionApplicationCommandCallbackSpec.builder();
 		msg.content("Role configuration: **" + roleName + "**");
-		msg.addComponent(ActionRow.of(SelectMenu.of("serveroptionselection/" + configOptionName, roleSelectionList)));
+		msg.addComponent(ActionRow.of(SelectMenu.ofRole("serveroptionselection/" + configOptionName,
+				List.of(DefaultValue.of(Snowflake.of(lastSelectedRole), DefaultValue.Type.ROLE)))));
 
 		// Return message
 		return msg.ephemeral(true).build();
-	}
-
-	// Method to check filters
-	private static boolean filterApplies(String data, String[] filter) {
-		for (String fData : filter) {
-			if (data.toLowerCase().contains(fData.toLowerCase()))
-				return true;
-		}
-		return false;
 	}
 }

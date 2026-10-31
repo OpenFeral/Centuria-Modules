@@ -6,7 +6,7 @@ import org.asf.centuria.discord.TimedActions;
 
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.interaction.ButtonInteractionEvent;
-import discord4j.core.object.component.ActionRow;
+import discord4j.core.object.component.Label;
 import discord4j.core.object.component.TextInput;
 import discord4j.core.spec.InteractionPresentModalSpec;
 import reactor.core.publisher.Mono;
@@ -36,7 +36,7 @@ public class FeedbackReplyButtonHandler {
 			InteractionPresentModalSpec.Builder modal = InteractionPresentModalSpec.builder();
 			modal.title("Reply to Feedback Report");
 			modal.customId("feedbackreply/" + acc.getAccountID());
-			modal.addComponent(ActionRow.of(TextInput.paragraph("reply", "Feedback reply message")));
+			modal.addComponent(Label.of("Feedback reply message", TextInput.paragraph("reply")));
 			return event.presentModal(modal.build());
 		}
 

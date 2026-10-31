@@ -195,7 +195,8 @@ public class DownloadSingleplayerLauncherHandler {
 					}
 
 					// Add file
-					msg.addFile("EmuFeral Singleplayer Launcher.zip", new ByteArrayInputStream(output.toByteArray()));
+					msg.addFile("EmuFeral Singleplayer Launcher.zip", null,
+							new ByteArrayInputStream(output.toByteArray()));
 					event.getInteraction().getChannel().block().createMessage(msg.build()).block();
 					event.deleteReply().block();
 				} catch (Exception e) {

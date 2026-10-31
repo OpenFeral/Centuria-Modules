@@ -72,7 +72,7 @@ public class AnnouncementHandlers implements IEventReceiver {
 
 	private void announce(String message) {
 		// Send to all guild log channels
-		for (Guild g : DiscordBotModule.getClient().getGuilds().toIterable()) {
+		for (Guild g : DiscordBotModule.getGatewayClient().getGuilds().toIterable()) {
 			String guildID = g.getId().asString();
 			JsonObject config = ServerConfigUtils.getServerConfig(guildID);
 			if (config.has("announcementChannel")) {

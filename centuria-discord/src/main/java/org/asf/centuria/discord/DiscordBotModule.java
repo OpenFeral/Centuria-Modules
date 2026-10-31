@@ -25,7 +25,6 @@ import org.asf.centuria.modules.ICenturiaModule;
 import org.asf.centuria.modules.eventbus.EventBus;
 import org.asf.centuria.modules.eventbus.EventListener;
 import org.asf.centuria.modules.events.accounts.AccountDeletionEvent;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -87,8 +86,17 @@ public class DiscordBotModule implements ICenturiaModule {
 	 * 
 	 * @return GatewayDiscordClient instance
 	 */
-	public static GatewayDiscordClient getClient() {
+	public static GatewayDiscordClient getGatewayClient() {
 		return gateway;
+	}
+
+	/**
+	 * Retrieves the discord bot client
+	 * 
+	 * @return DiscordClient instance
+	 */
+	public static DiscordClient getDiscordClient() {
+		return client;
 	}
 
 	@Override
@@ -184,8 +192,7 @@ public class DiscordBotModule implements ICenturiaModule {
 					.addOption(CommandHandler.createApplicationPanel()).build();
 
 			// Connect
-			client.gateway()
-					.setEnabledIntents(IntentSet.of(Intent.DIRECT_MESSAGES, Intent.GUILD_MEMBERS, Intent.GUILDS))
+			client.gateway().setEnabledIntents(IntentSet.of(Intent.DIRECT_MESSAGES, Intent.GUILDS))
 					.withGateway(gateway -> {
 						// Button handler
 						Mono<Void> ev = gateway.on(ButtonInteractionEvent.class, event -> {
