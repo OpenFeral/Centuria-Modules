@@ -1062,7 +1062,7 @@ public class ApplicationManager {
 								banInfo.addProperty("reason", cmd.parameters.get("reason").getAsString());
 							banInfo.addProperty("type", "ban");
 							banInfo.addProperty("unbanTimestamp", System.currentTimeMillis()
-									+ (cmd.parameters.get("banDurationSeconds").getAsInt() * 1000));
+									+ (cmd.parameters.get("banDurationSeconds").getAsLong() * 1000));
 							account.getSaveSharedInventory().setItem("penalty", banInfo);
 						} else
 							throw new IllegalArgumentException("Invalid ban type");
@@ -1126,7 +1126,7 @@ public class ApplicationManager {
 							if (cmd.parameters.has("reason"))
 								muteInfo.addProperty("reason", cmd.parameters.get("reason").getAsString());
 							muteInfo.addProperty("unmuteTimestamp", System.currentTimeMillis()
-									+ (cmd.parameters.get("muteDurationSeconds").getAsInt() * 1000));
+									+ (cmd.parameters.get("muteDurationSeconds").getAsLong() * 1000));
 						} else
 							throw new IllegalArgumentException("Invalid mute type");
 						account.getSaveSharedInventory().setItem("penalty", muteInfo);
@@ -1605,7 +1605,7 @@ public class ApplicationManager {
 							banInfo.addProperty("reason", cmd.parameters.get("reason").getAsString());
 						banInfo.addProperty("type", "ban");
 						banInfo.addProperty("unbanTimestamp", System.currentTimeMillis()
-								+ (cmd.parameters.get("banDurationSeconds").getAsInt() * 1000));
+								+ (cmd.parameters.get("banDurationSeconds").getAsLong() * 1000));
 						account.getSaveSharedInventory().setItem("penalty", banInfo);
 					} else
 						throw new IllegalArgumentException("Invalid ban type");
@@ -1857,7 +1857,7 @@ public class ApplicationManager {
 						if (cmd.parameters.has("reason"))
 							muteInfo.addProperty("reason", cmd.parameters.get("reason").getAsString());
 						muteInfo.addProperty("unmuteTimestamp", System.currentTimeMillis()
-								+ (cmd.parameters.get("muteDurationSeconds").getAsInt() * 1000));
+								+ (cmd.parameters.get("muteDurationSeconds").getAsLong() * 1000));
 					} else
 						throw new IllegalArgumentException("Invalid mute type");
 					account.getSaveSharedInventory().setItem("penalty", muteInfo);

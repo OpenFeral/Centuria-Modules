@@ -208,7 +208,7 @@ public class DiscordBotModule implements ICenturiaModule {
 							if (found) {
 								ApplicationCommandData cmd2 = cmds.filter(t -> t.name().equals("centuria"))
 										.blockFirst();
-								if (cmd2.options().get().size() != cmd.options().get().size()) {
+								if (cmd2 != null && cmd2.options().get().size() != cmd.options().get().size()) {
 									// Remove
 									try {
 										gateway.getRestClient().getApplicationService().deleteGuildApplicationCommand(
